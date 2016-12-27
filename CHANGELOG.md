@@ -1,4 +1,4 @@
-## streamlink 0.2.0 (12-16-2016)
+## streamlink 0.2.0 (2016-12-16)
 
 Release 0.2.0 of Streamlink!
 
@@ -86,7 +86,7 @@ thatlinuxfur <toss1@zootboy.com> (1):
       Added tigerdile.com support. (#221)
 ```
 
-## streamlink 0.1.0 (11-21-2016)
+## streamlink 0.1.0 (2016-11-21)
 
 A major update to Streamlink.
 
@@ -177,7 +177,7 @@ tam1m <tam1m@users.noreply.github.com> (1):
       Fix zdf_mediathek TypeError (#156)
 ```
 
-## streamlink 0.0.2 (10-12-2016)
+## streamlink 0.0.2 (2016-10-12)
 
 The second ever release of Streamlink!
 
@@ -255,7 +255,7 @@ steven7851 <steven7851@msn.com> (1):
       Update plugin.douyutv
 ```
 
-## streamlink 0.0.1 (09-23-2016)
+## streamlink 0.0.1 (2016-09-23)
 
 The first release of Streamlink!
 
