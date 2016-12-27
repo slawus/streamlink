@@ -1,3 +1,7 @@
+## streamlink 0.2.1 (2016-12-27)
+
+Foo bar
+
 ## streamlink 0.2.0 (2016-12-16)
 
 Release 0.2.0 of Streamlink!
