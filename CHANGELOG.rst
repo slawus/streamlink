@@ -1,3 +1,9 @@
+streamlink 0.2.2 (2017-01-11)
+-----------------------------
+
+Testing automated github releases
+
+
 streamlink 0.2.0 (2016-12-16)
 -----------------------------
 
