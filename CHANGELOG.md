@@ -1,5 +1,10 @@
 # Changelog
 
+## streamlink 13.3.7 (2019-03-15)
+
+test release
+
+
 ## streamlink 1.0.0 (2019-01-30)
 
 The celebratory release of Streamlink 1.0.0!
