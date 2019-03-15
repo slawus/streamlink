@@ -45,9 +45,6 @@ x-windows-installer: &x-windows-installer
 
 
 jobs:
-  allow_failures:
-    - stage: test
-      python: '3.8-dev'
   include:
     # tests: Linux + Windows
     - stage: test
@@ -59,6 +56,7 @@ jobs:
       dist: xenial
     - python: '3.8-dev'
       dist: xenial
+      allow_failure: true
     - python: '2.7'
       os: windows
       language: shell
@@ -66,6 +64,7 @@ jobs:
         - choco install python2
         - export PATH="/c/Python27:/c/Python27/Scripts:$PATH"
         - export TRAVIS_PYTHON_VERSION="2.7"
+      allow_failure: true
     - python: '3.4'
       os: windows
       language: shell
@@ -73,6 +72,7 @@ jobs:
         - choco install python --version 3.4.4.20180111
         - export PATH="/c/Python34:/c/Python34/Scripts:$PATH"
         - export TRAVIS_PYTHON_VERSION="3.4"
+      allow_failure: true
     - python: '3.5'
       os: windows
       language: shell
@@ -80,6 +80,7 @@ jobs:
         - choco install python --version 3.5.4
         - export PATH="/c/Python35:/c/Python35/Scripts:$PATH"
         - export TRAVIS_PYTHON_VERSION="3.5"
+      allow_failure: true
     - python: '3.6'
       os: windows
       language: shell
@@ -87,6 +88,7 @@ jobs:
         - choco install python --version 3.6.8
         - export PATH="/c/Python36:/c/Python36/Scripts:$PATH"
         - export TRAVIS_PYTHON_VERSION="3.6"
+      allow_failure: true
     - python: '3.7'
       os: windows
       language: shell
@@ -94,6 +96,7 @@ jobs:
         - choco install python
         - export PATH="/c/Python37:/c/Python37/Scripts:$PATH"
         - export TRAVIS_PYTHON_VERSION="3.7"
+      allow_failure: true
 
     # build Windows installer
     - name: installer
@@ -109,7 +112,7 @@ jobs:
     # deploy documentation
     - stage: deploy
       name: documentation
-      if: repo = streamlink/streamlink AND branch = master AND type = push
+      if: repo = bastimeyer-test/streamlink-test AND ( branch = travisci-test AND type = push OR tag IS present )
       python: '3.5'
       before_script:
         - python -m pip install -r docs-requirements.txt
@@ -117,22 +120,22 @@ jobs:
       script: make --directory=docs html
       deploy:
         - provider: script
-          script: doctr deploy latest
+          script: doctr --token "${RELEASES_API_KEY}" deploy latest
         - provider: script
-          script: doctr deploy .
+          script: doctr --token "${RELEASES_API_KEY}" deploy .
           on:
             tags: true
 
     # tagged release
     - stage: deploy
       name: release
-      if: repo = streamlink/streamlink AND branch = master AND type = push AND tag IS present
+      if: repo = bastimeyer-test/streamlink-test AND tag IS present
       python: '3.5'
       before_script: python -m pip install --upgrade wheel twine
       script: ./script/build-and-sign.sh
       deploy:
         - provider: script
-          script: ./script/deploy-pypi.sh
+          script: ./script/deploy-pypi.sh --dry-run
           skip_cleanup: true
         - provider: releases
           api_key: "${RELEASES_API_KEY}"
@@ -145,7 +148,7 @@ jobs:
 
     - stage: deploy
       name: "installer (release)"
-      if: repo = streamlink/streamlink AND branch = master AND type = push AND tag IS present
+      if: repo = bastimeyer-test/streamlink-test AND tag IS present
       <<: *x-windows-installer
       deploy:
         - provider: releases
@@ -156,7 +159,7 @@ jobs:
     # cron
     - stage: deploy
       name: "installer (development)"
-      if: repo = streamlink/streamlink AND branch = master AND type = cron
+      if: repo = bastimeyer-test/streamlink-test AND branch = travisci-test AND type = cron
       <<: *x-windows-installer
       before_deploy: ./script/bintrayconfig.sh
       deploy:
@@ -170,6 +173,5 @@ jobs:
 
 doctr:
   build-tags: True
-  deploy-repo: streamlink/streamlink.github.io
-  key-path: doctr_deploy_key.enc
+  deploy-repo: bastimeyer-test/streamlink-website-test
   require-master: True

@@ -11,7 +11,7 @@ for dep in setuptools wheel; do
 done
 
 
-KEY_ID=2E390FA0
+KEY_ID=756A814458144913
 KEY_FILE=${SIGNING_KEY_FILE:-signing.key}
 
 version=$(python setup.py --version)
