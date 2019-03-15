@@ -1,5 +1,14 @@
 # Changelog
 
+## streamlink 13.3.9 (2019-03-15)
+
+test release
+
+```text
+log
+```
+
+
 ## streamlink 13.3.8 (2019-03-15)
 
 test release

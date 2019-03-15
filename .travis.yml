@@ -79,11 +79,11 @@ jobs:
       script: make --directory=docs html
       deploy:
         - provider: script
-          script: doctr deploy --token "${RELEASES_API_KEY}" latest
+          script: echo doctr deploy latest
           on:
             all_branches: true
         - provider: script
-          script: doctr deploy --token "${RELEASES_API_KEY}" .
+          script: echo doctr deploy .
           on:
             all_branches: true
             tags: true
