@@ -79,10 +79,13 @@ jobs:
       script: make --directory=docs html
       deploy:
         - provider: script
-          script: doctr --token "${RELEASES_API_KEY}" deploy latest
-        - provider: script
-          script: doctr --token "${RELEASES_API_KEY}" deploy .
+          script: doctr deploy --token "${RELEASES_API_KEY}" latest
           on:
+            all_branches: true
+        - provider: script
+          script: doctr deploy --token "${RELEASES_API_KEY}" .
+          on:
+            all_branches: true
             tags: true
 
     # tagged release
@@ -96,14 +99,20 @@ jobs:
         - provider: script
           script: ./script/deploy-pypi.sh --dry-run
           skip_cleanup: true
+          on:
+            all_branches: true
         - provider: releases
           api_key: "${RELEASES_API_KEY}"
           file: "${STREAMLINK_DIST_DIR}/streamlink-${TRAVIS_TAG}.tar.gz{,.asc}"
           file_glob: true
           skip_cleanup: true
+          on:
+            all_branches: true
         - provider: script
           script: python script/github_releases.py
           skip_cleanup: true
+          on:
+            all_branches: true
 
     - stage: deploy
       name: "installer (release)"
@@ -114,6 +123,8 @@ jobs:
           api_key: "${RELEASES_API_KEY}"
           file: "${STREAMLINK_INSTALLER_DIST_DIR}/streamlink-${TRAVIS_TAG}.exe"
           skip_cleanup: true
+          on:
+            all_branches: true
 
     # cron
     - stage: deploy
@@ -127,6 +138,8 @@ jobs:
           user: "${BINTRAY_USER}"
           key: "${BINTRAY_KEY}"
           skip_cleanup: true
+          on:
+            all_branches: true
       after_deploy: ./script/bintrayupdate.sh
 
 
