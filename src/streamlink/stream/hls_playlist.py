@@ -68,8 +68,9 @@ class M3U8Parser(object):
     _tag_re = re.compile(r"#(?P<tag>[\w-]+)(:(?P<value>.+))?")
     _res_re = re.compile(r"(\d+)x(\d+)")
 
-    def __init__(self, base_uri=None):
+    def __init__(self, base_uri=None, worker=None):
         self.base_uri = base_uri
+        self.worker = worker
 
     def create_stream_info(self, streaminf, cls=None):
         program_id = streaminf.get("PROGRAM-ID")
@@ -161,11 +162,10 @@ class M3U8Parser(object):
                 date = self.state.pop("date", None)
                 map_ = self.state.get("map")
                 key = self.state.get("key")
-                discontinuity = self.state.get("discontinuity", False)
 
                 segment = Segment(self.uri(line), extinf[0],
                                   extinf[1], key,
-                                  discontinuity,
+                                  self.worker.discontinuity,
                                   byterange, date, map_)
 
                 self.m3u8.segments.append(segment)
@@ -215,7 +215,7 @@ class M3U8Parser(object):
                           attr.get("CHARACTERISTICS"))
             self.m3u8.media.append(media)
         elif line.startswith("#EXT-X-DISCONTINUITY"):
-            self.state["discontinuity"] = not self.state["discontinuity"]
+            self.worker.discontinuity = not self.worker.discontinuity
             self.state["map"] = None
         elif line.startswith("#EXT-X-DISCONTINUITY-SEQUENCE"):
             self.m3u8.discontinuity_sequence = self.parse_tag(line, int)
@@ -240,7 +240,7 @@ class M3U8Parser(object):
             self.m3u8.start = start
 
     def parse(self, data):
-        self.state = {"discontinuity": False}
+        self.state = {}
         self.m3u8 = M3U8()
 
         lines = iter(filter(bool, data.splitlines()))
@@ -278,7 +278,7 @@ class M3U8Parser(object):
             return uri
 
 
-def load(data, base_uri=None, parser=M3U8Parser):
+def load(data, base_uri=None, parser=M3U8Parser, worker=None):
     """Attempts to parse a M3U8 playlist from a string of data.
 
     If specified, *base_uri* is the base URI that relative URIs will
@@ -288,4 +288,4 @@ def load(data, base_uri=None, parser=M3U8Parser):
     to parse the data.
 
     """
-    return parser(base_uri).parse(data)
+    return parser(base_uri, worker).parse(data)

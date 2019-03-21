@@ -154,6 +154,7 @@ class HLSStreamWorker(SegmentedStreamWorker):
         SegmentedStreamWorker.__init__(self, *args, **kwargs)
         self.stream = self.reader.stream
 
+        self.discontinuity = False
         self.playlist_changed = False
         self.playlist_end = None
         self.playlist_sequence = -1
@@ -196,7 +197,7 @@ class HLSStreamWorker(SegmentedStreamWorker):
                                     retries=self.playlist_reload_retries,
                                     **self.reader.request_params)
         try:
-            playlist = hls_playlist.load(res.text, res.url)
+            playlist = hls_playlist.load(res.text, res.url, worker=self)
         except ValueError as err:
             raise StreamError(err)
 
